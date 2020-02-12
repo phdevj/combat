@@ -6,6 +6,7 @@ namespace server {
         private sizeX = 10
         private sizeY = 10
         private squares: Array<Array<squere>>
+        private fight: boolean = false
 
         constructor() {
             const squeres = new Array
@@ -21,37 +22,42 @@ namespace server {
 
         setPin(x: number, y: number, pin: pin) {
             const squere = this.getSquere(x,y)
-
-            if (squere.getContent() instanceof groud) 
-                squere.setPin(pin)
-
-            //TODO: implement else
+            squere.setPin(pin)
         }
 
         removePin(x: number, y: number) {
             //TODO: implement
         }
 
+        getSquereContent(x: number, y: number): pin | groud {
+            return this.getSquere(x, y).getContent()
+        }
+
         getSquere(x: number, y: number) { return this.squares[x][y] }
     }
 
     class squere {
-        x:number
-        y:number
-        content: pin|groud
+        x: number
+        y: number
+        content: Array<pin> | groud = new groud
 
         constructor(x: number, y: number) {
             this.x = x
             this.y = y
-            this.content = new groud
         }
 
-        getContent() : pin|groud { return this.content }
-        setPin(pin: pin) : void {  this.content = pin }
-        setGroud() : void {  this.content = new groud }
+        getContent(): Array<pin> | groud { return this.content }
+        setGroud(): void { this.content = new groud }
+        setPin(pin: pin): void {
+            if (this.content instanceof groud) {
+                this.content = new Array(pin)
+            } else {
+                this.content.push(pin)
+                this.fight = this.content.length == 2 ? true : false
+            }
+        }
     }
 
     class groud {}
-
 
 }
