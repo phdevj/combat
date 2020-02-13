@@ -1,7 +1,15 @@
-import { Keyboard } from './Keyboard'; 
-import { Match } from './game/Match';
+import { Keyboard } from "../game/Keyboard"
+import { Match } from "../game/Match"
 
-export class ConsoleCombat {
+
+(function start() {
+
+    const client = new Console
+    client.init()
+
+})() 
+
+class Console {
 
     init() {
 
