@@ -1,4 +1,4 @@
-import { Keyboard } from "../game/Keyboard"
+import { Keyboard } from "./Keyboard"
 import { Match } from "../game/Match"
 
 
