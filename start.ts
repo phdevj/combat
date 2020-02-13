@@ -1,14 +1,10 @@
-import { Match } from './game/Match';
-import { Keyboard } from './io';
-import { Player } from './game/Player';
+declare module start {
+    // import { ConsoleCombat } from './ConsoleCombat';
 
 
-(function start() {
-    
-    const player1 = new Player
-    const player2 = new Player
-
-    const game = new Match(player1, player2)
-
-    game.start()
-})()
+    (function start() {
+        
+        const client = new ConsoleCombat
+        client.init()
+    })()    
+}
