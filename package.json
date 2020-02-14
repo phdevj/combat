@@ -2,7 +2,7 @@
   "name": "combat",
   "version": "1.0.0",
   "description": "Virtual mode of board game Combat",
-  "main": "clients/Console.js",
+  "main": "build/src/start.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

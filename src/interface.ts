@@ -1,5 +1,4 @@
-import { EventEmitter } from 'tsee';
-export interface Interface<EventEmitter>  {
+declare interface Interface<EventEmitter>  {
     up(): void
     down(): void
     left(): void
@@ -7,3 +6,5 @@ export interface Interface<EventEmitter>  {
     enter(): void
     quit(): void
 }
+
+export { Interface as interface }
