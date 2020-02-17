@@ -1,31 +1,94 @@
 interface Pin { }
 
-class Match {
+export class Match {
     private field: Field = new Field
-    private players: Array<Player>|null = null
-    
-    start() {}
-    
-    moveTarget(player: Player, direction: string) {
+    private players: Array<Player> | null = null
+    private turnPlayer: number | null = null
+
+    up(playerId: number) {
+        if (this.isPlayerTurn(playerId)) {
+            this.moveTarget(playerId, 'UP')
+        }
+    }
+
+    down(playerId: number) {
+        if (this.isPlayerTurn(playerId)) {
+            this.moveTarget(playerId, 'DOWN')
+        }
+    }
+
+    left(playerId: number) {
+        if (this.isPlayerTurn(playerId)) {
+            this.moveTarget(playerId, 'LEFT')
+        }
+    }
+
+    right(playerId: number) {
+        if (this.isPlayerTurn(playerId)) {
+            this.moveTarget(playerId, 'RIGHT')
+        }
+    }
+
+    select(playerId: number) {
+        if (this.isPlayerTurn(playerId)) {
+            this.selectPin(playerId)
+        }
+    }
+
+    apply(playerId: number) {
+        if (this.isPlayerTurn(playerId)) {
+            this.applyPin(playerId)
+        }
+    }
+
+    setPlayer(id: number) {
+        if (this.players === null) this.players = new Array
+        this.players.push(new Player(id))
+    }
+
+    getMapJson() {
+
+    }
+
+    private setTurnPlayer(id: number) {
+        this.turnPlayer = id
+    }
+
+    private getPlayer(id: number): Player {
+        if (this.players !== null) {
+            for (const player of this.players) {
+                if (player.id == id) return player
+            }
+        }
+
+        throw "Player not found"; 
+    }
+
+    private moveTarget(playerId: number, direction: string) {
+        const player = this.getPlayer(playerId)
         player.moveTartget(direction)
     }
 
-    selectPin(player: Player) {
+    private selectPin(playerId: number) {
+        const player = this.getPlayer(playerId)
         const coordinates = player.getTarget()
         const content = this.field.getSquereContent(coordinates.positionX, coordinates.positionY)
 
         player.setInHand(content)
     }
 
-    applyPin(player: Player) {
-        const pin = player.getInHand()
-        const coordinates = player.getTarget()
-
-        if (pin !== null)
-            this.field.setPin(coordinates.positionX, coordinates.positionY, pin)
+    private applyPin(playerId: number) {
+        const player = this.getPlayer(playerId)
+            const pin = player.getInHand()
+            const coordinates = player.getTarget()
+    
+            if (pin !== null)
+                this.field.setPin(coordinates.positionX, coordinates.positionY, pin)
     }
 
-    hasFight(): boolean { return true }
+    private isPlayerTurn(playerId: number): boolean {
+        return this.turnPlayer === playerId
+    }
 }
 
 class Field {
@@ -72,16 +135,15 @@ class Squere {
         this.y = y
     }
 
-    getContent(): Array<Pin> | Groud { return this.content }
-    setGroud(): void { this.content = new Groud }
     setPin(pin: Pin): void {
         if (this.content instanceof Groud) {
             this.content = new Array(pin)
         } else {
             this.content.push(pin)
-            // this.fight = this.content.length == 2 ? true : false
         }
     }
+    getContent(): Array<Pin> | Groud { return this.content }
+    setGroud(): void { this.content = new Groud } 
 }
 
 class Groud {
@@ -112,23 +174,23 @@ class Fight {
 }
 
 class Player {
+    id: number
     private target = new Target
     private hand: Pin|null = null
 
-    getTarget(): Target { return this.target }
+    constructor(id: number) { this.id = id }
 
     moveTartget(direction: string) {
         switch (direction) {
-            case 'up': this.target.up()
-            case 'down': this.target.down()
-            case 'left': this.target.left()
-            case 'right': this.target.right()
+            case 'UP': this.target.up()
+            case 'DOWN': this.target.down()
+            case 'LEFT': this.target.left()
+            case 'RIGHT': this.target.right()
         }
     }
-
+    getTarget(): Target { return this.target }
     getInHand(): Pin|null { return this.hand }
     setInHand(pin: Pin|null): void { this.hand = pin }
-
 }
 
 class Target {
@@ -144,5 +206,3 @@ class Target {
         return futureX >= 1 && futureX <= 10 && futureY >= 1 && futureY <= 10
     }
 }
-
-export { Match }
