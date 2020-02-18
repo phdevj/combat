@@ -1,9 +1,15 @@
-interface Pin { }
+class Pin {
+    label = '1'
+}
 
 export class Match {
-    private field: Field = new Field
-    private players: Array<Player> | null = null
+    field: Field = new Field
+    players: Array<Player> | null = null
     private turnPlayer: number | null = null
+
+    render(): Render {
+        return new Render(this)
+    }
 
     up(playerId: number) {
         if (this.isPlayerTurn(playerId)) {
@@ -46,10 +52,6 @@ export class Match {
         this.players.push(new Player(id))
     }
 
-    getMapJson() {
-
-    }
-
     private setTurnPlayer(id: number) {
         this.turnPlayer = id
     }
@@ -74,7 +76,9 @@ export class Match {
         const coordinates = player.getTarget()
         const content = this.field.getSquereContent(coordinates.positionX, coordinates.positionY)
 
-        player.setInHand(content)
+        if (content instanceof Pin) {
+            player.setInHand(content)
+        }
     }
 
     private applyPin(playerId: number) {
@@ -92,8 +96,8 @@ export class Match {
 }
 
 class Field {
-    private sizeX = 10
-    private sizeY = 10
+    sizeX = 10
+    sizeY = 10
     private squares: Array<Array<Squere>>
     private fight: boolean = false
 
@@ -107,6 +111,7 @@ class Field {
             squeres.push(line)
         }
         this.squares = squeres
+        console.log(this.squares)
     }
 
     setPin(x: number, y: number, pin: Pin) {
@@ -118,11 +123,11 @@ class Field {
         //TODO: implement
     }
 
-    getSquereContent(x: number, y: number): Pin | Groud {
+    getSquereContent(x: number, y: number): Array<Pin> | Groud {
         return this.getSquere(x, y).getContent()
     }
 
-    getSquere(x: number, y: number) { return this.squares[x][y] }
+    getSquere(x: number, y: number) { return this.squares[0][0] }
 }
 
 class Squere {
@@ -147,7 +152,7 @@ class Squere {
 }
 
 class Groud {
-
+    label = '[]'
 }
 
 class Fight {
@@ -204,5 +209,25 @@ class Target {
 
     private isValidMovement(futureX: number, futureY: number): boolean {
         return futureX >= 1 && futureX <= 10 && futureY >= 1 && futureY <= 10
+    }
+}
+
+class Render {
+    private map: Field
+    private players: Array<Player> | null
+    constructor(game: Match) {
+        this.map = game.field
+        this.players = game.players
+    }
+
+    getOnMapPosition(x: number, y: number) {
+        const content = this.map.getSquereContent(x,y)
+        if (content instanceof Groud) {
+            return `[ ]`
+        }
+        if (content instanceof Pin) {
+            return `[${content.label}]`
+        }
+        return ` X `
     }
 }
