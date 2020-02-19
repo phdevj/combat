@@ -1,14 +1,10 @@
-class Pin {
-    label = '1'
-}
-
 export class Match {
     field: Field = new Field
     players: Array<Player> | null = null
     private turnPlayer: number | null = null
 
-    render(): Render {
-        return new Render(this)
+    getMap(): Field {
+        return this.field
     }
 
     up(playerId: number) {
@@ -95,6 +91,10 @@ export class Match {
     }
 }
 
+class Pin {
+    label = '1'
+}
+
 class Field {
     sizeX = 10
     sizeY = 10
@@ -111,7 +111,7 @@ class Field {
             squeres.push(line)
         }
         this.squares = squeres
-        console.log(this.squares)
+        //console.log(this.squares)
     }
 
     setPin(x: number, y: number, pin: Pin) {
@@ -127,7 +127,7 @@ class Field {
         return this.getSquere(x, y).getContent()
     }
 
-    getSquere(x: number, y: number) { return this.squares[0][0] }
+    getSquere(x: number, y: number) { return this.squares[x-1][y-1] }
 }
 
 class Squere {
@@ -151,7 +151,7 @@ class Squere {
     setGroud(): void { this.content = new Groud } 
 }
 
-class Groud {
+export class Groud {
     label = '[]'
 }
 
@@ -209,25 +209,5 @@ class Target {
 
     private isValidMovement(futureX: number, futureY: number): boolean {
         return futureX >= 1 && futureX <= 10 && futureY >= 1 && futureY <= 10
-    }
-}
-
-class Render {
-    private map: Field
-    private players: Array<Player> | null
-    constructor(game: Match) {
-        this.map = game.field
-        this.players = game.players
-    }
-
-    getOnMapPosition(x: number, y: number) {
-        const content = this.map.getSquereContent(x,y)
-        if (content instanceof Groud) {
-            return `[ ]`
-        }
-        if (content instanceof Pin) {
-            return `[${content.label}]`
-        }
-        return ` X `
     }
 }
